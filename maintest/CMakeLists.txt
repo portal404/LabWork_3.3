@@ -1,4 +1,4 @@
-set(target BLASTest.cpp)
+set(target GTests)
 
 file(GLOB hdrs "*.h*")
 file(GLOB srcs "*.cpp")

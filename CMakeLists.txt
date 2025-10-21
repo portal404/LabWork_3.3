@@ -6,8 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(PROJECT_NAME LabStack) #Создаем обычную локальную переменную с именем проекта
 project(${PROJECT_NAME}) # Название проекта
 
-set(application BLASApp) #Переменная с именем приложения
-set(library BLASLib) #Переменная с именем библиотеки
+set(application QueueStackLab) #Переменная с именем приложения
+set(library QueueStackLib) #Переменная с именем библиотеки
 
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE) #Создается переменная CMAKE_CONFIGURATION_TYPES со значением "Debug;Release" и меткой/разделом Configs, переменная сохраниется в специальном файле доступном из всех файлов,
 if(NOT CMAKE_BUILD_TYPE)

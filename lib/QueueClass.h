@@ -3,7 +3,7 @@
 
 using namespace std;
 
-
+//
 template <class T>
 class TQueue
 {
@@ -28,12 +28,20 @@ public:
     void SetFinish(size_t finish_);
     void SetMemory(T* memory_);
 
+    // Размер очереди
+    size_t Size() const;
+
     bool operator==(const TQueue<T>& other) const;
     bool operator!=(const TQueue<T>& other) const;
     T operator[](size_t index) const;
 
+    void push(const T& element);
+    T pop();
+    bool IsEmpty() const;
+    bool IsFull() const;
 
-
+    const T* begin();
+    const T* end();
 };
 
 template <class T>
@@ -163,6 +171,17 @@ inline void TQueue<T>::SetMemory(T* memory_)
     delete[] memory_;
 }
 
+
+
+template <class T>
+inline size_t TQueue<T>::Size() const
+{
+    if (start <= finish) {
+        return finish - start;
+    } else {
+        return capacity - start + finish;
+    }
+}
 // Операторы
 
 template <class T>
@@ -201,5 +220,47 @@ template <class T>
 inline bool TQueue<T>::operator!=(const TQueue<T>& other) const
 {
     return !(*this == other);
+}
+
+// паша поп
+
+template <class T>
+inline void TQueue<T>::push(const T& element)
+{
+    if (IsFull()) throw "Queue is full";
+    memory[finish] = element;
+    finish = (finish + 1) % capacity;
+}
+
+template <class T>
+inline T TQueue<T>::pop()
+{
+    if (IsEmpty()) "Queue is empty";
+    T element = memory[start];
+    start = (start + 1) % capacity;
+    return element;
+}
+
+template <class T>
+inline bool TQueue<T>::IsEmpty() const
+{
+    return start == finish;
+}
+
+template <class T>
+inline bool TQueue<T>::IsFull() const
+{
+    return (finish + 1) % capacity == start;
+}
+
+template<class T>
+inline const T * TQueue<T>::begin()
+{
+    return memory+start;
+}
+
+template<class T>
+inline const T* TQueue<T>::end() {
+    return memory+finish+1;
 }
 
