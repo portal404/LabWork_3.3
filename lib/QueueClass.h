@@ -1,0 +1,205 @@
+#pragma once
+#include <cstddef>
+
+using namespace std;
+
+
+template <class T>
+class TQueue
+{
+protected:
+    size_t capacity;
+    size_t start;
+    size_t finish;
+    T* memory;
+public:
+    TQueue();
+    TQueue(size_t capacity_);
+    TQueue(const TQueue& other);
+    TQueue(TQueue&& other);
+    ~TQueue();
+
+    size_t GetCapacity() const;
+    size_t GetStart() const;
+    size_t GetFinish() const;
+    T* GetMemory() const;
+    void SetCapacity(size_t capacity_);
+    void SetStart(size_t start_);
+    void SetFinish(size_t finish_);
+    void SetMemory(T* memory_);
+
+    bool operator==(const TQueue<T>& other) const;
+    bool operator!=(const TQueue<T>& other) const;
+    T operator[](size_t index) const;
+
+
+
+};
+
+template <class T>
+inline TQueue<T>::TQueue() : capacity(0), start(0), finish(0), memory(new T[capacity]) {}
+
+template <class T>
+inline TQueue<T>::TQueue(size_t capacity_)
+{
+    capacity = capacity_;
+    start = 0;
+    finish = 0;
+    if (capacity_ > 0)
+        memory = new T[capacity_];
+    else
+        memory = nullptr;
+}
+
+template <class T>
+inline TQueue<T>::TQueue(const TQueue& other)
+{
+    capacity = other.capacity;
+    start = other.start;
+    finish = other.finish;
+    if (other.capacity > 0)
+      {
+      memory = new T[other.capacity];
+      if (other.memory)
+      {
+        for (size_t i = 0; i < capacity; ++i)
+          memory[i] = other.memory[i];
+      }
+    }
+    else memory = nullptr;
+}
+
+template <class T>
+inline TQueue<T>::TQueue(TQueue&& other)
+{
+  capacity = other.capacity;
+  start = other.start;
+  finish = other.finish;
+  memory = other.memory;
+
+  other.capacity = 0;
+  other.start = 0;
+  other.finish = 0;
+  other.memory = nullptr;
+}
+
+template <class T>
+inline TQueue<T>::~TQueue()
+{
+  delete[] memory;
+}
+
+// геттеры и сеттеры
+
+template <class T>
+inline size_t TQueue<T>::GetCapacity() const
+{
+  return capacity;
+}
+
+template <class T>
+inline size_t TQueue<T>::GetStart() const
+{
+  return start;
+}
+
+template <class T>
+inline size_t TQueue<T>::GetFinish() const
+{
+  return finish;
+}
+
+template <class T>
+inline T* TQueue<T>::GetMemory() const
+{
+  return memory;
+}
+
+template <class T>
+inline void TQueue<T>::SetCapacity(size_t capacity_)
+{
+  if (capacity_ != capacity) {
+      T* newMemory = nullptr;
+      if (capacity_ > 0)
+          newMemory = new T[capacity_];
+
+      if (memory && newMemory)
+      {
+          size_t copySize = capacity_;
+          if (capacity_ > capacity)
+              copySize = capacity;
+
+          for (size_t i = 0; i < copySize; ++i)
+              newMemory[i] = memory[i];
+      }
+      delete[] memory;
+      memory = newMemory;
+      capacity = capacity_;
+      if (start >= capacity)
+          start = 0;
+      if (finish >= capacity)
+          finish = 0;
+  }
+}
+
+template <class T>
+inline void TQueue<T>::SetStart(size_t start_)
+{
+    if (start_ < capacity)
+        start = start_;
+}
+
+template <class T>
+inline void TQueue<T>::SetFinish(size_t finish_)
+{
+    if (finish_ < capacity)
+        finish = finish_;
+}
+
+template <class T>
+inline void TQueue<T>::SetMemory(T* memory_)
+{
+    memory = memory_;
+    delete[] memory_;
+}
+
+// Операторы
+
+template <class T>
+inline T TQueue<T>::operator[](size_t index) const
+{
+    if (memory == nullptr)
+        throw "Queue memory is not allocated";
+
+    if (index >= capacity)
+        throw "Index out of range";
+
+    size_t resIndex = (start + index) % capacity;
+    return memory[resIndex];
+}
+
+template <class T>
+inline bool TQueue<T>::operator==(const TQueue<T>& other) const
+{
+    if (this == &other)
+        return true;
+
+    if (capacity != other.capacity || start != other.start || finish != other.finish)
+        return false;
+
+    if (memory == other.memory)
+        return true;
+
+    for (size_t i = 0; i < capacity; ++i) {
+        if (memory[i] != other.memory[i])
+            return false;
+    }
+    return true;
+}
+
+template <class T>
+inline bool TQueue<T>::operator!=(const TQueue<T>& other) const
+{
+    return !(*this == other);
+}
+
