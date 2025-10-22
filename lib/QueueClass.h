@@ -40,8 +40,24 @@ public:
     bool IsEmpty() const;
     bool IsFull() const;
 
-    const T* begin();
-    const T* end();
+    class TIterator
+    {
+    protected:
+        TQueue<T>& p;
+        size_t current;
+        size_t passed;
+    public:
+        TIterator(TQueue<T> &queue, size_t start_pos, size_t passed_count);
+        T& operator*();
+        TIterator& operator++();
+        TIterator operator++(int);
+        bool operator==(const TIterator& other) const;
+        bool operator!=(const TIterator& other) const;
+    };
+
+    TIterator begin();
+    TIterator end();
+
 };
 
 template <class T>
@@ -235,7 +251,7 @@ inline void TQueue<T>::push(const T& element)
 template <class T>
 inline T TQueue<T>::pop()
 {
-    if (IsEmpty()) "Queue is empty";
+    if (IsEmpty()) throw "Queue is empty";
     T element = memory[start];
     start = (start + 1) % capacity;
     return element;
@@ -253,14 +269,56 @@ inline bool TQueue<T>::IsFull() const
     return (finish + 1) % capacity == start;
 }
 
-template<class T>
-inline const T * TQueue<T>::begin()
+// итератор
+
+template <class T>
+inline TQueue<T>::TIterator::TIterator(TQueue<T>& queue, size_t start_pos, size_t passed_count)
+    : p(queue), current(start_pos), passed(passed_count) {}
+
+
+template <class T>
+inline T& TQueue<T>::TIterator::operator*()
 {
-    return memory+start;
+    return p.memory[current];
 }
 
-template<class T>
-inline const T* TQueue<T>::end() {
-    return memory+finish+1;
+template <class T>
+inline typename TQueue<T>::TIterator& TQueue<T>::TIterator::operator++()
+{
+    if (passed >= p.Size()) {
+        throw "Iterator out of range";
+    }
+    current = (current + 1) % p.capacity;
+    passed++;
+    return *this;
 }
 
+template <class T>
+inline typename TQueue<T>::TIterator TQueue<T>::TIterator::operator++(int)
+{
+    TIterator temp = *this;
+    ++(*this);
+    return temp;
+}
+
+template <class T>
+inline bool TQueue<T>::TIterator::operator==(const TIterator& other) const
+{
+    return &p == &other.p && current == other.current && passed == other.passed;
+}
+
+template <class T>
+inline bool TQueue<T>::TIterator::operator!=(const TIterator& other) const
+{
+    return !(*this == other);
+}
+
+template <class T>
+inline typename TQueue<T>::TIterator TQueue<T>::begin() {
+    return TIterator(*this, start, 0);
+}
+
+template <class T>
+inline typename TQueue<T>::TIterator TQueue<T>::end() {
+    return TIterator(*this, (start + Size()) % capacity, Size());
+}
