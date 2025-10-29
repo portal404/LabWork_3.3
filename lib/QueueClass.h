@@ -3,7 +3,7 @@
 
 using namespace std;
 
-//
+
 template <class T>
 class TQueue
 {
@@ -57,7 +57,6 @@ public:
 
     TIterator begin();
     TIterator end();
-
 };
 
 template <class T>
@@ -314,11 +313,13 @@ inline bool TQueue<T>::TIterator::operator!=(const TIterator& other) const
 }
 
 template <class T>
-inline typename TQueue<T>::TIterator TQueue<T>::begin() {
+inline typename TQueue<T>::TIterator TQueue<T>::begin()
+{
     return TIterator(*this, start, 0);
 }
 
 template <class T>
-inline typename TQueue<T>::TIterator TQueue<T>::end() {
+inline typename TQueue<T>::TIterator TQueue<T>::end()
+{
     return TIterator(*this, (start + Size()) % capacity, Size());
 }

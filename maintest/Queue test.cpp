@@ -1,5 +1,5 @@
 #include <gtest.h>
-#include  "QueueClass.h"
+#include "QueueClass.h"
 
 TEST(TQueueTest, DefaultConstructor)
 {
