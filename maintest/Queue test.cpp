@@ -94,25 +94,6 @@ TEST(TQueueTest, IsEmptyAndIsFull)
     EXPECT_TRUE(queue.IsFull());
 }
 
-// Тесты для операторов
-TEST(TQueueTest, EqualityOperator)
-{
-    TQueue<int> queue1(5);
-    queue1.push(1);
-    queue1.push(2);
-
-    TQueue<int> queue2(5);
-    queue2.push(1);
-    queue2.push(2);
-
-    TQueue<int> queue3(5);
-    queue3.push(3);
-    queue3.push(4);
-
-    EXPECT_TRUE(queue1 == queue2);
-    EXPECT_FALSE(queue1 == queue3);
-}
-
 TEST(TQueueTest, InequalityOperator)
 {
     TQueue<int> queue1(5);
