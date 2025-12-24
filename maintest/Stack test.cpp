@@ -178,3 +178,114 @@ TEST(TStackTest, FullEmptyConditions)
     EXPECT_FALSE(stack.IsEmpty());
     EXPECT_TRUE(stack.IsFull());
 }
+
+TEST(TStackTest, MinMethod_SingleElement)
+{
+  TStack<int> stack(5);
+  stack.push(42);
+
+  // Минимальный элемент в стеке с одним элементом - этот же элемент
+  EXPECT_EQ(stack.Min(), 42);
+  // Проверяем, что стек не изменился
+  EXPECT_EQ(stack.Size(), 1);
+  EXPECT_EQ(stack.pop(), 42);
+}
+
+TEST(TStackTest, MinMethod_AllEqualElements)
+{
+  TStack<int> stack(5);
+  stack.push(7);
+  stack.push(7);
+  stack.push(7);
+  stack.push(7);
+
+  // Все элементы равны, минимальный = 7
+  EXPECT_EQ(stack.Min(), 7);
+  // Размер стека не должен измениться
+  EXPECT_EQ(stack.Size(), 4);
+}
+
+TEST(TStackTest, MinMethod_WithNegativeNumbers)
+{
+  TStack<int> stack(5);
+  stack.push(10);
+  stack.push(-5);   // Минимальный элемент
+  stack.push(0);
+  stack.push(5);
+
+  EXPECT_EQ(stack.Min(), -5);
+}
+
+TEST(TStackTest, MinMethod_AfterPopOperations)
+{
+  TStack<int> stack(5);
+  stack.push(10);
+  stack.push(5);
+  stack.push(1);   // Минимальный
+  stack.push(8);
+
+  // Проверяем минимум в исходном стеке
+  EXPECT_EQ(stack.Min(), 1);
+
+  // Удаляем элемент и снова проверяем минимум
+  stack.pop();  // Удаляем 8
+  EXPECT_EQ(stack.Min(), 1);
+
+  stack.pop();  // Удаляем 1
+  EXPECT_EQ(stack.Min(), 5);
+
+  stack.pop();  // Удаляем 5
+  EXPECT_EQ(stack.Min(), 10);
+}
+
+TEST(TStackTest, MinMethod_WithStringElements)
+{
+  TStack<std::string> stack(5);
+  stack.push("banana");
+  stack.push("apple");   // Минимальный по алфавиту
+  stack.push("cherry");
+
+  // Для строк минимальный - по алфавиту "apple"
+  EXPECT_EQ(stack.Min(), "apple");
+}
+
+TEST(TStackTest, MinMethod_StackUnchanged)
+{
+  TStack<int> stack(5);
+  stack.push(3);
+  stack.push(1);
+  stack.push(2);
+
+  const size_t originalSize = stack.Size();
+
+  // Вызываем Min() - стек не должен измениться
+  int minVal = stack.Min();
+
+  EXPECT_EQ(minVal, 1);
+  EXPECT_EQ(stack.Size(), originalSize);
+
+  // Проверяем, что элементы остались в том же порядке
+  EXPECT_EQ(stack.pop(), 2);
+  EXPECT_EQ(stack.pop(), 1);
+  EXPECT_EQ(stack.pop(), 3);
+}
+
+TEST(TStackTest, MinMethod_WithCopyConstructor)
+{
+  TStack<int> stack1(5);
+  stack1.push(5);
+  stack1.push(2);   // Минимальный
+  stack1.push(8);
+
+  // Копируем стек
+  TStack<int> stack2(stack1);
+
+  // Минимум должен быть одинаковым в обоих стеках
+  EXPECT_EQ(stack1.Min(), 2);
+  EXPECT_EQ(stack2.Min(), 2);
+
+  // Изменение одного стека не должно влиять на другой
+  stack1.pop();
+  EXPECT_EQ(stack1.Min(), 2);   // В stack1 теперь [5, 2]
+  EXPECT_EQ(stack2.Min(), 2);   // В stack2 остается [5, 2, 8]
+}

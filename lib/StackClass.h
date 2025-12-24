@@ -55,6 +55,9 @@ public:
 
   TIterator begin();
   TIterator end();
+
+  // Метод поиска min ДОП
+  T Min() const;
 };
 
 template <class T>
@@ -264,4 +267,27 @@ template <class T>
 inline typename TStack<T>::TIterator TStack<T>::end()
 {
     return TIterator(*this, top, top);
+}
+
+
+
+template <class T>
+inline T TStack<T>::Min() const
+{
+  if (IsEmpty())
+    throw "Stack is empty";
+
+  // инициализация минимума первым элементом
+  T minElement = memory[0];
+
+  // обход
+  for (size_t i = 1; i < top; ++i)
+  {
+    if (memory[i] < minElement)
+    {
+      minElement = memory[i];
+    }
+  }
+
+  return minElement;
 }

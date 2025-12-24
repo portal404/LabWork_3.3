@@ -57,6 +57,11 @@ public:
 
     TIterator begin();
     TIterator end();
+
+
+    // Метод поиска min ДОП
+    T Min() const;
+
 };
 
 template <class T>
@@ -323,3 +328,23 @@ inline typename TQueue<T>::TIterator TQueue<T>::end()
 {
     return TIterator(*this, (start + Size()) % capacity, Size());
 }
+
+
+template <class T>
+inline T TQueue<T>::Min() const
+{
+  if (start == finish)
+    throw "Queue is empty";
+  // Инициализация минимального элемента первым элементом очереди
+  T minElement = memory[start];
+  size_t current = start;
+  // Обход всех элементов очереди
+  while (current != finish)
+  {
+    if (memory[current] < minElement)
+      minElement = memory[current];
+    current = (current + 1) % capacity;
+  }
+  return minElement;
+}
+
